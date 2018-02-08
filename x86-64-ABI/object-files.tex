@@ -417,8 +417,10 @@ The following notations are used for specifying relocations in table~
 \item[G] Represents the offset into the global offset table at which 
   the relocation entry's symbol will reside during execution.
 \item[GOT] Represents the address of the global offset table.
-\item[L] Represents the place (section offset or address) of the
-  \textindex{Procedure Linkage Table} entry for a symbol.
+\item[L] Represents the value of the symbol whose index resides in the
+  relocation entry.  The symbol value is the place (section offset or
+  address) of the \textindex{Procedure Linkage Table} entry for the
+  symbol when it is defined externally in a shared object.
 \item[P] Represents the place (section offset or address) of the
   storage unit being relocated (computed using \code{r_offset}).
 \item[S] Represents the value of the symbol whose index resides in the
@@ -508,6 +510,18 @@ to those used for the \intelabi.  \footnote{Even though
   Because 32-bit offsets are used, loads of global data do not require
   loading the offset into a displacement register; the base plus
   immediate displacement addressing form can be used.}
+
+\begin{sloppypar}
+The \texttt{R_X86_64_PLT32} relocation is different from the equivalent
+i386 \texttt{R_386_PLT32} relocation.  On i386, there are 2 types of
+PLTs (\textindex{Procedure Linkage Table}), PIC and non-PIC.  Shared
+objects must use PIC PLT which requires that \texttt{_GLOBAL_OFFSET_TABLE_}
+must be loaded into EBX register first.  The \xARCH architecture only
+has one PLT which is PC-relative. The \texttt{R_X86_64_PLT32} relocation,
+instead of the \texttt{R_X86_64_PC32} relocation, should be used with
+32-bit PC-relative branches to global functions.  Branches to local
+functions should use the \texttt{R_X86_64_PC32} relocation.
+\end{sloppypar}
 
 \begin{sloppypar}
 The \texttt{R_X86_64_GOTPCREL} relocation has different semantics from the
